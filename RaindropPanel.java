@@ -1,4 +1,3 @@
-
 import java.awt.*;
 import java.awt.event.*;
 
@@ -17,24 +16,43 @@ public class RaindropPanel extends JPanel implements ActionListener, KeyListener
 	private int ba_height;
 	private ImageIcon[] images = new ImageIcon[50];
 	private int min = 0;
-	private int max = 37;
+	private int max = 49;
 	private int range = max - min + 1;
 	private String answer = "";
 	private int rand;
 	private boolean start = false;
+	private int raindropsCleared = 1;
+	private JLabel a;
+	private int Lives;
+	private JPanel cards;
+	
+	
 	
 	public RaindropPanel(){
-		for (int i = 0; i < 38; i++) {
+		for (int i = 0; i < 50; i++) {
 			images[i] = new ImageIcon("src/" + i + ".png");
+			
 		}
 	//	ImageIcon i = new ImageIcon("src/10.png");
-	//	ImageIcon a = new ImageIcon("src/Water.jpeg");
+		ImageIcon a = new ImageIcon("src/Background.png");
+		ba = a.getImage();
+		ba_width = ba.getWidth(null);
+		ba_height = ba.getHeight(null);
 		rand = (int)(Math.random() * range) + min;
 		bg = images[rand].getImage();
+		
 		bg_width = bg.getWidth(null);
 		bg_height = bg.getHeight(null);
 		t.start();
 	}
+	
+	public int getWidth() {
+		return ba_width;
+	}
+	public int getHeight() {
+		return ba_height;
+	}
+
 	
 	public void setAnswer(String answer) {
 		this.answer = answer;
@@ -42,6 +60,13 @@ public class RaindropPanel extends JPanel implements ActionListener, KeyListener
 	public void setStart(boolean start) {
 		this.start = start;
 	}
+	public void setRaindropsCleared (int raindropsCleared) {
+		this.raindropsCleared = raindropsCleared;
+	}
+	public int getRaindropsCleared () {
+		return this.raindropsCleared;
+	}
+
 	
 	public void actionPerformed(ActionEvent e){
 		if((x+squaresize)==FRAMEX)
@@ -57,15 +82,22 @@ public class RaindropPanel extends JPanel implements ActionListener, KeyListener
 		x += xincrement;
 		y += yincrement;
 		if (start == true) 
-			y_coord += 1;
+		y_coord += 1;
 		if ((y_coord + bg_height) == FRAMEY) {
-			rand = (int)(Math.random() * range) + min;
-			System.out.println("2 Rand is" + rand);
-			System.out.println("2 Answer is" + answer);
-			bg = images[rand].getImage();
-			y_coord = 0;
+		rand = (int)(Math.random() * range) + min;
+		bg = images[rand].getImage();
+		y_coord = 0;
+		Lives = Lives + 1;
+	
 		}
+		//else if (Lives == 1) {
+		//	 JOptionPane.showMessageDialog(null , "YOU HAVE LOST LOL");
+		
+		//}
 		repaint();
+		
+		
+
 		
 		
 	}
@@ -73,14 +105,19 @@ public class RaindropPanel extends JPanel implements ActionListener, KeyListener
 		super.paintComponent(g);
 		//g.fillRect(x, y, squaresize, squaresize);
 		Graphics2D g2d = (Graphics2D) g;
-		System.out.println("Answer is" + answer);
+		System.out.println(answer);
+		super.paintComponent(g);
+		Graphics2D g3d = (Graphics2D) g;
+		g3d.drawImage(ba, 0, 0, null);
 		if (answer.equals(String.valueOf(rand))){
+			raindropsCleared = raindropsCleared + 1;
 			rand = (int)(Math.random() * range) + min;
-			System.out.println("Rand is" + rand);
 			bg = images[rand].getImage();
 			y_coord = 0;
 			g2d.drawImage(bg, 1, y_coord, null);
 			answer = "";
+			System.out.println(images[rand]);
+		
 		}
 		else {
 			g2d.drawImage(bg, 1, y_coord, null);
@@ -95,7 +132,10 @@ public class RaindropPanel extends JPanel implements ActionListener, KeyListener
 		f.add(p);
 		f.setVisible(true);
 		f.addKeyListener(p);
-	
+		
+
+		
+		
 	}
 
 	public static void main(String[] args) {
@@ -133,3 +173,7 @@ public class RaindropPanel extends JPanel implements ActionListener, KeyListener
 
 	public void keyReleased(KeyEvent e) { }
 }
+
+
+
+

@@ -1,15 +1,16 @@
-//Import swing classes
 import java.awt.*;
+import java.awt.event.*;
+
 import javax.swing.*;
 @SuppressWarnings("serial")
-public class PlayGamePanel extends JPanel {
-	//Shows the Game Menu Image
+public class InstructionsPanel extends JPanel {
+	//Shows the Image for the Instructions Panel
 	private Image bb;
 	private int bb_height;
 	private int bb_width;
 
-	public PlayGamePanel () {
-		ImageIcon k = new ImageIcon("src/Raindrops.png");
+	public InstructionsPanel () {
+		ImageIcon k = new ImageIcon("src/InstructionsImage.png");
 		bb = k.getImage();
 		bb_width = bb.getWidth(null);
 		bb_height = bb.getHeight(null);

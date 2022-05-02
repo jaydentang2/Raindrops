@@ -21,12 +21,11 @@ public class RaindropPanel extends JPanel implements ActionListener, KeyListener
 	private String answer = "";
 	private int rand;
 	private boolean start = false;
-	private int raindropsCleared = 1;
 	private JLabel a;
-	private int Lives;
+	private int Lives = 3;
 	private JPanel cards;
-	
-	
+	private int raindropsCleared = 0;
+	private JLabel l;
 	
 	public RaindropPanel(){
 		for (int i = 0; i < 50; i++) {
@@ -57,8 +56,18 @@ public class RaindropPanel extends JPanel implements ActionListener, KeyListener
 	public void setAnswer(String answer) {
 		this.answer = answer;
 	}
+	public String getAnswer() {
+		return this.answer;
+	}
+	public void setRand(int rand) {
+		this.rand = rand;
+	}
+	public int getRand() {
+		return this.rand;
+	}
 	public void setStart(boolean start) {
 		this.start = start;
+		this.t.start();
 	}
 	public void setRaindropsCleared (int raindropsCleared) {
 		this.raindropsCleared = raindropsCleared;
@@ -66,41 +75,97 @@ public class RaindropPanel extends JPanel implements ActionListener, KeyListener
 	public int getRaindropsCleared () {
 		return this.raindropsCleared;
 	}
-
-	
+	public void setLives (int Lives) {
+		this.Lives = Lives;
+	}
+	public int getLives() {
+		return this.Lives;
+	}
+	public void setLabel(JLabel l) {
+		this.l = l;
+	}
+	public void setRaindropClearedLabel (JLabel a) {
+		this.a = a;
+	}
+	//public void setraindropsClearedLabel (label raindropsClearedLabel) {
+	//	this.raindropsClearedLabel = raindropsClearedLabel
+	//}
 	public void actionPerformed(ActionEvent e){
-		if((x+squaresize)==FRAMEX)
-			xincrement *=-1;
-		else if ((y+squaresize) == (FRAMEY - 20))
-			yincrement *= -1;
-		else if (x == 0) {
-			xincrement *= -1;
-		}
-		else if (y == 0) {
-			yincrement *= -1;
-		}
-		x += xincrement;
-		y += yincrement;
+		
 		if (start == true) 
-		y_coord += 1;
+			y_coord += 1;
+		
 		if ((y_coord + bg_height) == FRAMEY) {
 		rand = (int)(Math.random() * range) + min;
 		bg = images[rand].getImage();
 		y_coord = 0;
-		Lives = Lives + 1;
+		Lives = Lives - 1;
 	
 		}
 		//else if (Lives == 1) {
-		//	 JOptionPane.showMessageDialog(null , "YOU HAVE LOST LOL");
+			
+		// JOptionPane.showMessageDialog(null , "YOU HAVE LOST LOL");
+			
 		
-		//}
-		repaint();
+	//	}
+		if (raindropsCleared >= 25) {
+			y_coord +=1.01;
+		}
+		else if ((y_coord + bg_height) == FRAMEY) {
+			rand = (int)(Math.random() * range) + min;
+			bg = images[rand].getImage();
+			y_coord = 0;
+			Lives = Lives - 1;
+		}
+		else if (raindropsCleared >= 50) {
+			y_coord += 1.1;
+		}
+		else if ((y_coord + bg_height) == FRAMEY) {
+			rand = (int)(Math.random() * range) + min;
+			bg = images[rand].getImage();
+			y_coord = 0;
+			Lives = Lives - 1;
+		}
+		else if (raindropsCleared >= 75) {
+			y_coord += 1.2;
+		}
+		else if ((y_coord + bg_height) == FRAMEY) {
+			rand = (int)(Math.random() * range) + min;
+			bg = images[rand].getImage();
+			y_coord = 0;
+			Lives = Lives - 1;
+		}
+		else if (raindropsCleared >= 95) {
+			y_coord +=1.25;
+		}
+		else if ((y_coord + bg_height) == FRAMEY) {
+			rand = (int)(Math.random() * range) + min;
+			bg = images[rand].getImage();
+			y_coord = 0;
+			Lives = Lives - 1;
+		}
+		this.l.setText("Lives Left: " + String.valueOf(this.Lives));
+		this.a.setText("Raindrops Cleared: " + String.valueOf(this.getRaindropsCleared()));
 		
-		
-
-		
+		if (Lives == -50) {
+			JOptionPane.showMessageDialog(null , "You have lost :(, Press the options menu to play again.");
+			this.t.stop();
+			this.Lives = 3;
+			this.raindropsCleared = 0;
+			this.l.setText("Lives Left: " + String.valueOf(this.Lives));
+		}
+		if (getRaindropsCleared() == 100) {
+			JOptionPane.showMessageDialog(null , "You have won!! You cleared 100 RAINDROPS:) Congratulations. Press the Menu Option to play again.");
+			this.t.stop();
+			this.Lives = 3;
+			this.raindropsCleared = 0;
+			this.l.setText("Lives Left: " + String.valueOf(this.Lives));
+		}
+		else
+			repaint();	
 		
 	}
+	
 	public void paintComponent(Graphics g){
 		super.paintComponent(g);
 		//g.fillRect(x, y, squaresize, squaresize);
@@ -110,13 +175,13 @@ public class RaindropPanel extends JPanel implements ActionListener, KeyListener
 		Graphics2D g3d = (Graphics2D) g;
 		g3d.drawImage(ba, 0, 0, null);
 		if (answer.equals(String.valueOf(rand))){
-			raindropsCleared = raindropsCleared + 1;
 			rand = (int)(Math.random() * range) + min;
 			bg = images[rand].getImage();
 			y_coord = 0;
 			g2d.drawImage(bg, 1, y_coord, null);
 			answer = "";
 			System.out.println(images[rand]);
+		//	raindropsCleared = raindropsCleared + 1;
 		
 		}
 		else {
@@ -132,10 +197,6 @@ public class RaindropPanel extends JPanel implements ActionListener, KeyListener
 		f.add(p);
 		f.setVisible(true);
 		f.addKeyListener(p);
-		
-
-		
-		
 	}
 
 	public static void main(String[] args) {
@@ -173,7 +234,4 @@ public class RaindropPanel extends JPanel implements ActionListener, KeyListener
 
 	public void keyReleased(KeyEvent e) { }
 }
-
-
-
 

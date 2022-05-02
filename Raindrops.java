@@ -10,6 +10,7 @@ public class Raindrops extends JPanel implements ActionListener, KeyListener {
 	private JTextField textField;
 	private JButton submitButton; 
 	private RaindropPanel card3;
+	private GameOverPanel card4;
 	private boolean start;
 	private int rand;
 	private String answer = "";
@@ -17,28 +18,39 @@ public class Raindrops extends JPanel implements ActionListener, KeyListener {
 	private int bb_height;
 	private int bb_width;
 	private JLabel label;
+	private JLabel liveslabel;
+	//private int raindropsCleared = 0;
+
 	
 	public Raindrops () {
-		ImageIcon k = new ImageIcon("src/RaindropS.png");
+		ImageIcon k = new ImageIcon("src/Raindrops.png");
 		bb = k.getImage();
 		bb_width = bb.getWidth(null);
 		bb_height = bb.getHeight(null);
-  }
+		
+    }
 	public int getWidth() {
 		return bb_width;
 	}
 	public int getHeight() {
 		return bb_height;
 	}
+	
+	public void paintComponent(Graphics g){
+		super.paintComponent(g);
+		Graphics2D g4d = (Graphics2D) g;
+		g4d.drawImage(bb, 0, 0, null);
+		
+	}
 
-	
-	
 	public void actionPerformed(ActionEvent e) {
+		
 		//System.out.println(e.getActionCommand());
 		if (e.getActionCommand().equals("Play")) {
 			CardLayout cl = (CardLayout)(cards.getLayout());
 			cl.show(cards, "C3");
 			card3.setStart(true);
+		
 		}
 		//Check to see what menu item the user chose
 		else if (e.getActionCommand().equals("Play Game")) {
@@ -49,25 +61,32 @@ public class Raindrops extends JPanel implements ActionListener, KeyListener {
 			CardLayout cl = (CardLayout)(cards.getLayout());
 			cl.show(cards, "C2");
 		}
+
+		
 		else if (e.getSource() == submitButton) {
 			//System.out.println("Text: " + textField.getText());
 			card3.setAnswer(textField.getText());
 			textField.setText("");
 			//raindropsCleared = raindropsCleared + 1;
 		}
-	
-		
 		
 		// Assume they chose exit if no others...
 		else
 			System.exit(0);
+		
 	}
 	 public void keyPressed(KeyEvent e) {
 		    if (e.getKeyCode()==KeyEvent.VK_ENTER){
 		    	card3.setAnswer(textField.getText());
 				textField.setText("");
-				this.label.setText("Raindrops Cleared: " + String.valueOf(this.card3.getRaindropsCleared()));
+				if (card3.getAnswer().equals(String.valueOf(card3.getRand()))) {
+					card3.setRaindropsCleared(card3.getRaindropsCleared() + 1);
+				}
+				
+				this.label.setText("Raindrops Cleared: " + String.valueOf(card3.getRaindropsCleared()));
 				this.label.setForeground(Color.white);
+			
+				
 		    }
 		  }
 	 public void keyReleased(KeyEvent arg) {}
@@ -91,12 +110,21 @@ public class Raindrops extends JPanel implements ActionListener, KeyListener {
 	}
 	public void setup () {
 		JFrame f = new JFrame("Card Layout");
-		JPanel card1 = new JPanel();
+	//	JPanel card1 = new JPanel();
+		PlayGamePanel card1 = new PlayGamePanel();
 		JPanel card2 = new JPanel();
+		
 		card3 = new RaindropPanel();
-		this.label = new JLabel("Raindrops Cleared: " + 0);
+		this.label = new JLabel("Raindrops Cleared: " + String.valueOf(this.card3.getRaindropsCleared()+ "   "));
 		this.label.setForeground(Color.white);
+		this.liveslabel = new JLabel("Lives left: " + this.card3.getLives());
+		this.liveslabel.setForeground(Color.white);
 		card3.add(label);
+		card3.add(liveslabel);
+		card3.setLabel(liveslabel);
+		card3.setRaindropClearedLabel(this.label);
+		
+		
 	
 		
 		JMenuBar menubar = new JMenuBar();
@@ -122,6 +150,7 @@ public class Raindrops extends JPanel implements ActionListener, KeyListener {
 		playButton.addActionListener(this);
 		playButton.setBounds(2500, 2500, 0, 0);
 		card1.add(playButton);
+		
 		l = new JLabel("Math questions will appear on raindrops. Answer the questions on the bottom before the raindrops hit the ground! Your goal is to clear 50 raindrops before 3 hit the ground.");
 		card2.add(l);
 		JPanel Card3Button = new JPanel();
@@ -133,6 +162,10 @@ public class Raindrops extends JPanel implements ActionListener, KeyListener {
 		cards.add(card1, "C1");
 		cards.add(card2, "C2");
 		cards.add(card3, "C3");
+		//cards.add(card4, "C4");
+		
+	
+	
 		
 		textField = new JTextField(10);
 		card3.add(textField);
@@ -160,5 +193,4 @@ public class Raindrops extends JPanel implements ActionListener, KeyListener {
 		
 	}
 }
-
 
